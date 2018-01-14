@@ -18,8 +18,8 @@
       <file leaf-file-name="ADS.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ADS.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="858">
-              <caret line="123" column="36" lean-forward="true" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
+            <state relative-caret-position="287">
+              <caret line="100" column="38" lean-forward="false" selection-start-line="100" selection-start-column="31" selection-end-line="100" selection-end-column="38" />
               <folding>
                 <element signature="e#1#12#0" expanded="true" />
               </folding>
@@ -40,6 +40,11 @@
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>adsread</find>
+    </findStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -146,8 +151,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ADS.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="858">
-          <caret line="123" column="36" lean-forward="true" selection-start-line="123" selection-start-column="36" selection-end-line="123" selection-end-column="36" />
+        <state relative-caret-position="287">
+          <caret line="100" column="38" lean-forward="false" selection-start-line="100" selection-start-column="31" selection-end-line="100" selection-end-column="38" />
           <folding>
             <element signature="e#1#12#0" expanded="true" />
           </folding>
