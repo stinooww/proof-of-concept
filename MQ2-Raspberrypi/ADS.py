@@ -1,9 +1,10 @@
 
-# adapted from sandboxelectronics.com/?p=165
-
-import time
 import math
-#"from MCP3008 import MCP3008
+import time, signal, sys 
+import os
+# Import the ADS1x15 module.
+import Adafruit_ADS1x15
+
  
 class ADS():
 
@@ -59,7 +60,7 @@ class ADS():
         val["SMOKE"]    = self.ADSGetGasPercentage(read/self.Ro, self.GAS_SMOKE)
         return val
         
-    ######################### MQResistanceCalculation #########################
+    ######################### ADSResistanceCalculation #########################
     # Input:   raw_adc - raw value read from adc, which represents the voltage
     # Output:  the calculated sensor resistance
     # Remarks: The sensor and the load resistor forms a voltage divider. Given the voltage
@@ -70,7 +71,7 @@ class ADS():
         return float(self.RL_VALUE*(1023.0-raw_adc)/float(raw_adc));
      
      
-    ######################### MQCalibration ####################################
+    ######################### ADSCalibration ####################################
     # Input:   mq_pin - analog channel
     # Output:  Ro of the sensor
     # Remarks: This function assumes that the sensor is in clean air. It use  
@@ -81,7 +82,7 @@ class ADS():
     def ADSCalibration(self, self.ADS_PIN):
         val = 0.0
         for i in range(self.CALIBARAION_SAMPLE_TIMES):          # take multiple samples
-            val += self.ADSResistanceCalculation(self.adc.read_adc(self.ADS_PIN, gain=GAIN ))
+            val += self.ADSResistanceCalculation(adc.read_adc(self.ADS_PIN ))
             time.sleep(self.CALIBRATION_SAMPLE_INTERVAL/1000.0)
             
         val = val/self.CALIBARAION_SAMPLE_TIMES                 # calculate the average value
@@ -92,7 +93,7 @@ class ADS():
         return val;
       
       
-    #########################  MQRead ##########################################
+    #########################  ADSRead ##########################################
     # Input:   mq_pin - analog channel
     # Output:  Rs of the sensor
     # Remarks: This function use MQResistanceCalculation to caculate the sensor resistenc (Rs).
@@ -100,34 +101,34 @@ class ADS():
     #          gas. The sample times and the time interval between samples could be configured
     #          by changing the definition of the macros.
     ############################################################################ 
-    def MQRead(self, mq_pin):
+    def ADSRead(self, ADS_PIN):
         rs = 0.0
 
         for i in range(self.READ_SAMPLE_TIMES):
-            rs += self.MQResistanceCalculation(self.adc.read(mq_pin))
+            rs += self.ADSResistanceCalculation(adc.read_adc(ADS_PIN))
             time.sleep(self.READ_SAMPLE_INTERVAL/1000.0)
 
         rs = rs/self.READ_SAMPLE_TIMES
 
         return rs
      
-    #########################  MQGetGasPercentage ##############################
+    #########################  ADSGetGasPercentage ##############################
     # Input:   rs_ro_ratio - Rs divided by Ro
     #          gas_id      - target gas type
     # Output:  ppm of the target gas
-    # Remarks: This function passes different curves to the MQGetPercentage function which 
+    # Remarks: This function passes different curves to the ADSGetPercentage function which 
     #          calculates the ppm (parts per million) of the target gas.
     ############################################################################ 
-    def MQGetGasPercentage(self, rs_ro_ratio, gas_id):
+    def ADSGetGasPercentage(self, rs_ro_ratio, gas_id):
         if ( gas_id == self.GAS_LPG ):
-            return self.MQGetPercentage(rs_ro_ratio, self.LPGCurve)
+            return self.ADSGetPercentage(rs_ro_ratio, self.LPGCurve)
         elif ( gas_id == self.GAS_CO ):
-            return self.MQGetPercentage(rs_ro_ratio, self.COCurve)
+            return self.ADSGetPercentage(rs_ro_ratio, self.COCurve)
         elif ( gas_id == self.GAS_SMOKE ):
-            return self.MQGetPercentage(rs_ro_ratio, self.SmokeCurve)
+            return self.ADSGetPercentage(rs_ro_ratio, self.SmokeCurve)
         return 0
      
-    #########################  MQGetPercentage #################################
+    #########################  ADSGetPercentage #################################
     # Input:   rs_ro_ratio - Rs divided by Ro
     #          pcurve      - pointer to the curve of the target gas
     # Output:  ppm of the target gas
@@ -136,6 +137,6 @@ class ADS():
     #          logarithmic coordinate, power of 10 is used to convert the result to non-logarithmic 
     #          value.
     ############################################################################ 
-    def MQGetPercentage(self, rs_ro_ratio, pcurve):
+    def ADSGetPercentage(self, rs_ro_ratio, pcurve):
         return (math.pow(10,( ((math.log(rs_ro_ratio)-pcurve[1])/ pcurve[2]) + pcurve[0])))
 
