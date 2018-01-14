@@ -13,7 +13,7 @@ class ADS():
     RL_VALUE                     = 5        # define the load resistance on the board, in kilo ohms
     RO_CLEAN_AIR_FACTOR          = 9.83     # RO_CLEAR_AIR_FACTOR=(Sensor resistance in clean air)/RO,
                                             # which is derived from the chart in datasheet
-    GAIN =                       = 1
+    GAIN                        = 1
  
     ######################### Software Related Macros #########################
     CALIBARAION_SAMPLE_TIMES     = 50       # define how many samples you are going to take in the calibration phase
@@ -47,14 +47,15 @@ class ADS():
                                             # data format:[ x, y, slope]; point1: (lg200, 0.53), point2: (lg10000,  -0.22)  
                 
         print("Calibrating...")
-        self.Ro = self.ADSCalibration(self.ADS_PIN)
+        self.Ro = self.ADSCalibration(ADS_PIN)
         print("Calibration is done...\n")
+        
         print("Ro=%f kohm" % self.Ro)
     
     
     def ADSPercentage(self):
         val = {}
-        read = adc.read_adc(self.ADS_PIN, gain= GAIN)
+        read = adc.read_adc(ADS_PIN)
         val["GAS_LPG"]  = self.ADSGetGasPercentage(read/self.Ro, self.GAS_LPG)
         val["CO"]       = self.ADSGetGasPercentage(read/self.Ro, self.GAS_CO)
         val["SMOKE"]    = self.ADSGetGasPercentage(read/self.Ro, self.GAS_SMOKE)
@@ -75,20 +76,24 @@ class ADS():
     # Input:   mq_pin - analog channel
     # Output:  Ro of the sensor
     # Remarks: This function assumes that the sensor is in clean air. It use  
-    #          MQResistanceCalculation to calculates the sensor resistance in clean air 
+    #          ADSResistanceCalculation to calculates the sensor resistance in clean air 
     #          and then divides it with RO_CLEAN_AIR_FACTOR. RO_CLEAN_AIR_FACTOR is about 
     #          10, which differs slightly between different sensors.
     ############################################################################ 
-    def ADSCalibration(self, self.ADS_PIN):
+    def ADSCalibration(self, ADS_PIN):
         val = 0.0
+        print("Starten van calibratie deel1..\n")
+
         for i in range(self.CALIBARAION_SAMPLE_TIMES):          # take multiple samples
-            val += self.ADSResistanceCalculation(adc.read_adc(self.ADS_PIN ))
+            val += self.ADSResistanceCalculation(adc.read_adc(ADS_PIN ))
             time.sleep(self.CALIBRATION_SAMPLE_INTERVAL/1000.0)
             
         val = val/self.CALIBARAION_SAMPLE_TIMES                 # calculate the average value
 
         val = val/self.RO_CLEAN_AIR_FACTOR                      # divided by RO_CLEAN_AIR_FACTOR yields the Ro 
                                                                 # according to the chart in the datasheet 
+        print("weerstand sensor in clean air=%f " % self.val)
+
 
         return val;
       
@@ -103,6 +108,7 @@ class ADS():
     ############################################################################ 
     def ADSRead(self, ADS_PIN):
         rs = 0.0
+        print("Starten van calibratie deel2..\n")
 
         for i in range(self.READ_SAMPLE_TIMES):
             rs += self.ADSResistanceCalculation(adc.read_adc(ADS_PIN))
@@ -120,6 +126,8 @@ class ADS():
     #          calculates the ppm (parts per million) of the target gas.
     ############################################################################ 
     def ADSGetGasPercentage(self, rs_ro_ratio, gas_id):
+        print("Starten van calibratie deel3..\n")
+
         if ( gas_id == self.GAS_LPG ):
             return self.ADSGetPercentage(rs_ro_ratio, self.LPGCurve)
         elif ( gas_id == self.GAS_CO ):
