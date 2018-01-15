@@ -2,6 +2,10 @@
 
 Proof of concept: Ik wil aantonen dat je met een gassensor de lucht kan meten via een arduino of Raspberryi pi  en deze doen communiceren via het internet naar een website / gsm om zo sneller op de hoogte te worden gehouden
 
+Link van Youtube filmpje:  https://youtu.be/M4FNdXOMakc
+
+
+
 Gebruikte bronnen:
 ---------------------------------------------------------------------------------------------------------------------------------------
 * https://makeblockshop.nl/products/makeblock-me-gas-sensor-mq2
